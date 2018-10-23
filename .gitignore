@@ -1,0 +1,4 @@
+hosts
+*.log
+/log[s]
+*.retry
