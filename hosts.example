@@ -1,5 +1,5 @@
 [master]
-master0 ansible_host=<master_ip> ansible_user=root
+master ansible_host=<master_ip> ansible_user=root
 
 [workers]
 worker1 ansible_host=<worker_1_ip> ansible_user=root

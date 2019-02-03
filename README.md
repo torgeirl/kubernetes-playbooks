@@ -1,12 +1,12 @@
 kubernetes-playbooks
 =============
 
-Ansible playbooks that creates a Kubernetes cluster on your Ubuntu 18.04 servers.
+Ansible playbooks that creates a Kubernetes 1.12 cluster on your Ubuntu 18.04 servers.
 
 ## Prerequisites
 * Ansible installed on your local machine (`# yum install ansible`).
-* `ssh` login to your servers from your local maschine with SSH key pairs. Easiest metode is to create/modify your `~/.ssh/config` file with their login details.
-* The servers will need to be in the `~/.ssh/known_hosts` file on your local machine (just `ssh` each server manually).
+* SSH access to your servers from your local maschine with SSH key pairs. Easiest metode is to create/modify your `~/.ssh/config` file with their login details.
+* The servers will need to be in the `~/.ssh/known_hosts` file on your local machine (just SSH into each server manually).
 * TCP trafic on port 6443 needs to be allowed between the servers.
 
 ## Create a hosts file

@@ -1,6 +1,10 @@
 - hosts: all
   become: yes
   tasks:
+    - fail:
+       msg: "OS should be Ubuntu 18.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
+      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '18.04'
+
     - name: create the 'ubuntu' user
       user: name=ubuntu append=yes state=present createhome=yes shell=/bin/bash
 

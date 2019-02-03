@@ -1,43 +1,48 @@
 - hosts: all
   become: yes
   tasks:
-   - name: install Docker
-     apt:
-       name: docker.io
-       state: present
-       update_cache: true
+    - fail:
+       msg: "OS should be Ubuntu 18.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
+      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '18.04'
 
-   - name: install APT Transport HTTPS
-     apt:
-       name: apt-transport-https
-       state: present
+    - name: install Docker
+      apt:
+        name: docker.io
+        state: present
+        update_cache: true
 
-   - name: add Kubernetes apt-key
-     apt_key:
-       url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
-       state: present
+    - name: install APT Transport HTTPS
+      apt:
+        name: apt-transport-https
+        state: present
 
-   - name: add Kubernetes' APT repository
-     apt_repository:
-      repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
-      state: present
-      filename: 'kubernetes'
+    - name: add Kubernetes apt-key
+      apt_key:
+        url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        state: present
 
-   - name: install kubelet
-     apt:
-       name: kubelet
-       state: present
-       update_cache: true
+    - name: add Kubernetes' APT repository
+      apt_repository:
+        repo: deb https://apt.kubernetes.io/ kubernetes-xenial main
+        state: present
+        filename: 'kubernetes'
 
-   - name: install kubeadm
-     apt:
-       name: kubeadm
-       state: present
+    - name: install kubelet
+      apt:
+        name: kubelet=1.12.*
+        state: present
+        update_cache: true
+
+    - name: install kubeadm
+      apt:
+        name: kubeadm=1.12.*
+        state: present
 
 - hosts: master
   become: yes
   tasks:
-   - name: install kubectl
-     apt:
-       name: kubectl
-       state: present
+    - name: install kubectl
+      apt:
+        name: kubectl=1.12.*
+        state: present
+        force: yes # allow downgrades
