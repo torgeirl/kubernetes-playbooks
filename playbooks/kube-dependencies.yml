@@ -5,16 +5,25 @@
        msg: "OS should be Ubuntu 18.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
       when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '18.04'
 
-    - name: install Docker
-      apt:
-        name: docker.io
-        state: present
-        update_cache: true
-
     - name: install APT Transport HTTPS
       apt:
         name: apt-transport-https
         state: present
+
+    - name: add Docker apt-key
+      apt_key:
+        url: https://download.docker.com/linux/ubuntu/gpg
+        state: present
+
+    - name: add Docker's APT repository
+      apt_repository:
+        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+
+    - name: install Docker
+      apt:
+        name: docker-ce=18.06.*
+        state: present
+        update_cache: true
 
     - name: add Kubernetes apt-key
       apt_key:
