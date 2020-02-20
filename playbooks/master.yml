@@ -1,7 +1,7 @@
 - hosts: master
   become: yes
   tasks:
-    - name: initialize the cluster
+    - name: initialize the cluster (this could take some time)
       shell: kubeadm init --pod-network-cidr=10.244.0.0/16 >> cluster_initialized.txt
       args:
         chdir: $HOME
@@ -25,7 +25,7 @@
     - name: install Pod network
       become: yes
       become_user: ubuntu
-      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/v0.11.0/Documentation/kube-flannel.yml >> pod_network_setup.txt
+      shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.txt
       args:
         chdir: $HOME
         creates: pod_network_setup.txt

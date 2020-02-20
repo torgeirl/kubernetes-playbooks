@@ -21,7 +21,7 @@
 
     - name: install Docker
       apt:
-        name: docker-ce=18.06.*
+        name: docker-ce=5:19.03.*
         state: present
         update_cache: true
 
@@ -38,13 +38,13 @@
 
     - name: install kubelet
       apt:
-        name: kubelet=1.12.*
+        name: kubelet=1.17.*
         state: present
         update_cache: true
 
     - name: install kubeadm
       apt:
-        name: kubeadm=1.12.*
+        name: kubeadm=1.17.*
         state: present
 
 - hosts: master
@@ -52,6 +52,6 @@
   tasks:
     - name: install kubectl
       apt:
-        name: kubectl=1.12.*
+        name: kubectl=1.17.*
         state: present
         force: yes # allow downgrades
