@@ -65,7 +65,7 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 `ssh` onto the master and verify that the master node get status `Ready`:
 ```
 $ ssh -i /path/to/ssh-key ubuntu@<master_ip>
-$ kubectl get nodes
+ubuntu@k8s-master-1:~$ kubectl get nodes
 NAME           STATUS   ROLES    AGE    VERSION
 k8s-master-1   Ready    master   4m1s   v1.17.4
 ```
