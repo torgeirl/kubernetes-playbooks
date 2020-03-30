@@ -10,11 +10,13 @@ Ansible playbooks that creates a Kubernetes 1.17 cluster of Openstack instances 
 
 ## Create a `keystone_rc` file
  `$ cp keystone_rc.sh.example keystone_rc.sh`
+
  `$ chmod 0600 keystone_rc.sh`
 
 The `keystone_rc.sh` file will contain your API password so be careful with where you store it, and make sure it's private. Once it is, add your API password for OpenStack.
 
 Then load the file to the shell environment on the local computer:
+
  `$ source keystone_rc.sh`
 
 ## Add a public key for the cluster to the API user
@@ -24,25 +26,34 @@ SSH key pairs are tied to users, and the dashboard and API user are technically 
 
 ## Build the cluster using Terraform
 Change directory to `tf-project` and initialize Terraform:
+
  `$ cd tf-project`
+
  `$ terraform init`
 
 Modify the number of workers by editing `locals`' `worker_count` value in `cluster.tf`:
+
  `$ vim cluster.tf`
 
 Then verify, plan and apply with Terraform:
+
  `$ terraform validate`
+
  `$ terraform plan`
+
  `$ terraform apply`
 
 Change directory back to the main directory:
+
  `$ cd ..`
 
 ## Create an inventory file for Ansible
 After creating the cluster on OpenStack, Terraform created a `ansible_inventory` file in the `tf-project` directory. It contains the machine names and IP addresses for the cluster.
 
 Alternatively, a `hosts` file can be created. Add the IP address to the master and workers in the `hosts` file using a text editor, and make sure each machine can be reached using SSH:
+
  `$ cp hosts.example hosts`
+
  `$ vim hosts`
 
 ## Install Kubernetes dependencies on all servers
@@ -51,7 +62,9 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 ## Initialize the master node
  `$ ansible-playbook -i tf-project/ansible_inventory playbooks/master.yml`
 
-`ssh` onto the master and run `$ kubectl get nodes` to verify the master node get status `Ready`.
+`ssh` onto the master and run `$ kubectl get nodes` to verify the master node get status `Ready`:
+
+ `$ ssh -i /path/to/ssh-key ubuntu@<master_ip>
 
 ## Add the worker nodes
  `$ ansible-playbook -i tf-project/ansible_inventory playbooks/workers.yml`
@@ -62,7 +75,9 @@ Run `$ kubectl get nodes` once more on the master node to verify the worker node
 Edit `tf-project/cluster` and re-run `$ terraform apply` to change the cluster, before re-running the playbooks to add new workers.
 
 Destroy the cluster when done:
+
  `$ cd tf-project`
+
  `$ terraform destroy`
 
 ## Credits
