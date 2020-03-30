@@ -73,7 +73,7 @@ k8s-master-1   Ready    master   4m1s   v1.17.4
 ## Add the worker nodes
  `$ ansible-playbook -i tf-project/ansible_inventory playbooks/workers.yml`
 
-Run `$ kubectl get nodes` once more on the master node to verify the worker nodes got added.
+Run `kubectl get nodes` once more on the master node to verify the worker nodes got added.
 
 ## Change or destroy the cluster
 Edit `tf-project/cluster` and re-run `terraform apply` to change the cluster, before re-running the playbooks to add new workers.
