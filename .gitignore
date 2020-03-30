@@ -1,4 +1,8 @@
 hosts
+keystone_rc.sh
 *.log
 /log[s]
 *.retry
+tf-project/.terraform/
+tf-project/*terraform.tfstate*
+tf-project/ansible_inventory
