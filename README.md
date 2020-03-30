@@ -62,9 +62,13 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 ## Initialize the master node
  `$ ansible-playbook -i tf-project/ansible_inventory playbooks/master.yml`
 
-`ssh` onto the master and run `$ kubectl get nodes` to verify the master node get status `Ready`:
-
- `$ ssh -i /path/to/ssh-key ubuntu@<master_ip>
+`ssh` onto the master and verify that the master node get status `Ready`:
+```
+$ ssh -i /path/to/ssh-key ubuntu@<master_ip>
+$ kubectl get nodes
+NAME           STATUS   ROLES    AGE    VERSION
+k8s-master-1   Ready    master   4m1s   v1.17.4
+```
 
 ## Add the worker nodes
  `$ ansible-playbook -i tf-project/ansible_inventory playbooks/workers.yml`
@@ -72,7 +76,7 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 Run `$ kubectl get nodes` once more on the master node to verify the worker nodes got added.
 
 ## Change or destroy the cluster
-Edit `tf-project/cluster` and re-run `$ terraform apply` to change the cluster, before re-running the playbooks to add new workers.
+Edit `tf-project/cluster` and re-run `terraform apply` to change the cluster, before re-running the playbooks to add new workers.
 
 Destroy the cluster when done:
 
