@@ -39,7 +39,7 @@ resource "openstack_networking_secgroup_rule_v2" "rule_k8s_tcp_6443_ipv6" {
 resource "openstack_compute_instance_v2" "master_instance" {
   count = 1 
   name = "k8s-master-${count.index+1}"
-  image_id = "45971556-cb9f-4eb2-ae83-bead013ada15"
+  image_id = "4694c709-d287-4126-837f-25012b02b61f"
   flavor_name = "m1.xlarge"
 
   key_pair = local.key_pair
@@ -53,7 +53,7 @@ resource "openstack_compute_instance_v2" "master_instance" {
 resource "openstack_compute_instance_v2" "worker_instance" {
   count = local.worker_count
   name = "k8s-worker-${count.index+1}"
-  image_id = "45971556-cb9f-4eb2-ae83-bead013ada15"
+  image_id = "4694c709-d287-4126-837f-25012b02b61f"
   flavor_name = "m1.small"
 
   key_pair = local.key_pair
