@@ -1,6 +1,6 @@
 # build instances on Openstack for a Kubernetes cluster
 locals {
-  worker_count = 42
+  worker_count = 38
   image_id = "b4c06722-224f-41fc-b791-d5511ca97878"
   key_pair = "k8s-nodes"
   key_pair_location = "~/.ssh"
@@ -41,7 +41,7 @@ resource "openstack_compute_instance_v2" "master_instance" {
   count = 1 
   name = "k8s-master-${count.index+1}"
   image_id = local.image_id
-  flavor_name = "m1.large"
+  flavor_name = "${local.worker_count < 11 ? "m1.large" : "m1.xlarge"}"
 
   key_pair = local.key_pair
   security_groups = [ local.ssh_security_group, openstack_networking_secgroup_v2.instance_comms.name ]
