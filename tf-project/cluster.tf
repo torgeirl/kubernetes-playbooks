@@ -1,7 +1,7 @@
 # build instances on Openstack for a Kubernetes cluster
 locals {
   worker_count = 42
-  image_id = "471f4073-94b8-4deb-a365-a5f00eea08a1"
+  image_id = "b4c06722-224f-41fc-b791-d5511ca97878"
   key_pair = "k8s-nodes"
   key_pair_location = "~/.ssh"
   ssh_security_group = "SSH and ICMP"
