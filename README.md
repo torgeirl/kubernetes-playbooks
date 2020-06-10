@@ -1,7 +1,7 @@
 kubernetes-playbooks
 =============
 
-Ansible playbooks that creates a Kubernetes 1.17 cluster of Openstack instances running Ubuntu 18.04 LTS.
+Ansible playbooks that creates a Kubernetes 1.17 cluster of Openstack instances running Ubuntu 20.04 LTS.
 
 ## Prerequisites
 * Ansible and Python3 installed on the local machine (`# yum install ansible`).
