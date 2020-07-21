@@ -1,6 +1,6 @@
 # build instances on Openstack for a Kubernetes cluster
 locals {
-  worker_count = 38
+  worker_count = 19
   image_name = "GOLD Ubuntu 18.04 LTS"
   key_pair = "k8s-nodes"
   key_pair_location = "~/.ssh"
@@ -55,7 +55,7 @@ resource "openstack_compute_instance_v2" "worker_instance" {
   count = local.worker_count
   name = "k8s-worker-${count.index+1}"
   image_name = local.image_name
-  flavor_name = "m1.small"
+  flavor_name = "c1.large"
 
   key_pair = local.key_pair
   security_groups = [ local.ssh_security_group, openstack_networking_secgroup_v2.instance_comms.name ]
