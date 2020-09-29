@@ -24,7 +24,8 @@
 
     - name: add Docker's APT repository
       apt_repository:
-        repo: deb [arch=amd64] https://download.docker.com/linux/ubuntu bionic stable
+        repo: "deb [arch=amd64] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+        filename: "docker-{{ ansible_distribution_release }}"
 
     - name: install Docker
       apt:
@@ -45,13 +46,13 @@
 
     - name: install kubelet
       apt:
-        name: kubelet=1.17.*
+        name: kubelet=1.19.*
         state: present
         update_cache: true
 
     - name: install kubeadm
       apt:
-        name: kubeadm=1.17.*
+        name: kubeadm=1.19.*
         state: present
 
 - hosts: master
@@ -59,6 +60,12 @@
   tasks:
     - name: install kubectl
       apt:
-        name: kubectl=1.17.*
+        name: kubectl=1.19.*
         state: present
         force: yes # allow downgrades
+
+    - name: add user to the docker group
+      user:
+        name: "{{ ansible_user }}"
+        group: docker
+        append: yes
