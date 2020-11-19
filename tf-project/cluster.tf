@@ -68,7 +68,7 @@ resource "openstack_compute_instance_v2" "worker_instance" {
 }
 
 resource "local_file" "ansible_inventory" {
-  content = "[master]\n${openstack_compute_instance_v2.master_instance[0].name} ansible_host=var.K8S_NETWORK_VERSION > 4 ? openstack_compute_instance_v2.master_instance[0].access_ip_v6 : openstack_compute_instance_v2.master_instance[0].access_ip_v4\n\n[workers]\n${join("\n",
+  content = "[master]\n${openstack_compute_instance_v2.master_instance[0].name} ansible_host=${var.K8S_NETWORK_VERSION > 4 ? openstack_compute_instance_v2.master_instance[0].access_ip_v6 : openstack_compute_instance_v2.master_instance[0].access_ip_v4}\n\n[workers]\n${join("\n",
              formatlist(
                "%s ansible_host=%s",
                openstack_compute_instance_v2.worker_instance.*.name,
