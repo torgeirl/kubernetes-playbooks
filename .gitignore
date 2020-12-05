@@ -4,5 +4,5 @@ keystone_rc.sh
 /log[s]
 *.retry
 tf-project/.terraform/
-tf-project/*terraform.tfstate*
+tf-project/*terraform.*
 tf-project/ansible_inventory

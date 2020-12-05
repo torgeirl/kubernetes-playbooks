@@ -8,7 +8,7 @@ variable "K8S_KEY_PAIR_LOCATION" {}
 variable "K8S_SECURITY_GROUP" {}
 
 terraform {
-  required_version = ">= 0.13, < 0.14"
+  required_version = ">= 0.13"
 }
 
 provider "openstack" {}
