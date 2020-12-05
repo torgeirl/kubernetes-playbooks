@@ -3,7 +3,6 @@ variable "K8S_WORKER_COUNT" {}
 variable "K8S_WORKER_FLAVOR" {}
 variable "K8S_IMAGE_NAME" {}
 variable "K8S_NETWORK_NAME" {}
-variable "K8S_NETWORK_VERSION" {}
 variable "K8S_KEY_PAIR" {}
 variable "K8S_KEY_PAIR_LOCATION" {}
 variable "K8S_SECURITY_GROUP" {}
@@ -24,17 +23,6 @@ resource "openstack_networking_secgroup_v2" "instance_comms" {
 resource "openstack_networking_secgroup_rule_v2" "rule_k8s_tcp_6443_ipv4" {
   direction = "ingress"
   ethertype = "IPv4"
-  protocol  = "tcp"
-  port_range_min = 6443
-  port_range_max = 6443
-  remote_group_id = openstack_networking_secgroup_v2.instance_comms.id
-  security_group_id = openstack_networking_secgroup_v2.instance_comms.id
-}
-
-# Allow tcp on port 6443 for IPv6 within security group
-resource "openstack_networking_secgroup_rule_v2" "rule_k8s_tcp_6443_ipv6" {
-  direction = "ingress"
-  ethertype = "IPv6"
   protocol  = "tcp"
   port_range_min = 6443
   port_range_max = 6443
@@ -72,11 +60,10 @@ resource "openstack_compute_instance_v2" "worker_instance" {
 }
 
 resource "local_file" "ansible_inventory" {
-  content = "[master]\n${openstack_compute_instance_v2.master_instance[0].name} ansible_host=${var.K8S_NETWORK_VERSION > 4 ? openstack_compute_instance_v2.master_instance[0].access_ip_v6 : openstack_compute_instance_v2.master_instance[0].access_ip_v4}\n\n[workers]\n${join("\n",
+  content = "[master]\n${openstack_compute_instance_v2.master_instance[0].name} ansible_host=${openstack_compute_instance_v2.master_instance[0].access_ip_v4}\n\n[workers]\n${join("\n",
              formatlist(
                "%s ansible_host=%s",
-               openstack_compute_instance_v2.worker_instance.*.name,
-               var.K8S_NETWORK_VERSION > 4 ? openstack_compute_instance_v2.worker_instance.*.access_ip_v6 : openstack_compute_instance_v2.worker_instance.*.access_ip_v4
+               openstack_compute_instance_v2.worker_instance.*.name, openstack_compute_instance_v2.worker_instance.*.access_ip_v4
              ))}\n\n[all:vars]\nansible_python_interpreter=/usr/bin/python3\nansible_ssh_extra_args='-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null'\nansible_ssh_private_key_file=${var.K8S_KEY_PAIR_LOCATION}/${var.K8S_KEY_PAIR}\nansible_user=ubuntu"
 
   file_permission = "0600"
