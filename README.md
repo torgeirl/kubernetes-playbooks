@@ -13,7 +13,7 @@ Ansible playbooks that creates a Kubernetes 1.19 cluster of Openstack instances 
 
  `$ chmod 0600 keystone_rc.sh`
 
-The `keystone_rc.sh` file will contain your API password so be careful with where you store it, and make sure it's private. Once it is, add your API password for OpenStack.
+The `keystone_rc.sh` file will contain your API password so be careful with where you store it, and make sure it's private. Once it is, add your API password for OpenStack. You can also modify the worker count, network version, etc.
 
 Then load the file to the shell environment on the local computer:
 
@@ -30,10 +30,6 @@ Change directory to `tf-project` and initialize Terraform:
  `$ cd tf-project`
 
  `$ terraform init`
-
-Modify the number of workers by editing `locals`' `worker_count` value in `cluster.tf`:
-
- `$ vim cluster.tf`
 
 Then verify, plan and apply with Terraform:
 
@@ -76,7 +72,7 @@ k8s-master-1   Ready    master   4m1s   v1.19.2
 Run `kubectl get nodes` once more on the master node to verify the worker nodes got added.
 
 ## Change or destroy the cluster
-Edit `tf-project/cluster` and re-run `terraform apply` to change the cluster, before re-running the playbooks to add new workers.
+Edit cluster settings in the `keystone_rc.sh` and source it again before re-running `terraform apply` to change the cluster, before re-running the playbooks to add new workers.
 
 Destroy the cluster when done:
 
