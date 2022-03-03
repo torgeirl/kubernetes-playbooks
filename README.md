@@ -62,8 +62,8 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 ```
 $ ssh -i /path/to/ssh-key ubuntu@<master_ip>
 ubuntu@k8s-master-1:~$ kubectl get nodes
-NAME           STATUS   ROLES    AGE    VERSION
-k8s-master-1   Ready    master   4m1s   v1.19.2
+NAME           STATUS   ROLES                  AGE   VERSION
+k8s-master-1   Ready    control-plane,master   59s   v1.23.4
 ```
 
 ## Add the worker nodes
