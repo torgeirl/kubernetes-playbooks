@@ -2,8 +2,8 @@
   become: yes
   tasks:
     - fail:
-       msg: "OS should be Ubuntu 20.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
-      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '20.04'
+       msg: "OS should be Ubuntu 22.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
+      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '22.04'
 
     - name: update APT packages
       apt:
@@ -126,9 +126,3 @@
         name: kubectl=1.23.*
         state: present
         force: yes # allow downgrades
-
-#    - name: add user to the docker group
-#      user:
-#        name: "{{ ansible_user }}"
-#        group: docker
-#        append: yes
