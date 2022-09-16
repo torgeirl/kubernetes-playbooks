@@ -92,6 +92,14 @@
     - name: add Containerd configuration
       shell: /usr/bin/containerd config default > /etc/containerd/config.toml
 
+    - name: configuring the systemd cgroup driver
+      replace:
+        path: /etc/containerd/config.toml
+        after: '[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]'
+        before: '[plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime]'
+        regexp: 'SystemdCgroup = false'
+        replace: 'SystemdCgroup = true'
+
     - name: enable the Containerd service and start it
       systemd:
         name: containerd
