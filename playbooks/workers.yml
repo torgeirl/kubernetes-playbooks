@@ -18,7 +18,7 @@
       wait_for: "host={{ hostvars['k8s-master-1']['ansible_default_ipv4']['address'] }} port=6443 timeout=1"
 
     - name: join cluster
-      shell: "{{ hostvars['k8s-master-1'].join_command }} >> node_joined.txt"
+      shell: "{{ hostvars['k8s-master-1'].join_command }} >> node_joined.log"
       args:
-        chdir: $HOME
-        creates: node_joined.txt
+        chdir: /home/ubuntu
+        creates: node_joined.log
