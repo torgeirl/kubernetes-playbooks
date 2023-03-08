@@ -1,7 +1,7 @@
 kubernetes-playbooks
 =============
 
-Ansible playbooks that creates a Kubernetes 1.19 cluster of Openstack instances running Ubuntu 22.04 LTS.
+Ansible playbooks that creates a Kubernetes 1.26 cluster of Openstack instances running Ubuntu 22.04 LTS.
 
 ## Prerequisites
 * Ansible and Python3 installed on the local machine (`# yum install ansible`).
@@ -62,8 +62,8 @@ Alternatively, a `hosts` file can be created. Add the IP address to the master a
 ```
 $ ssh -i /path/to/ssh-key ubuntu@<master_ip>
 ubuntu@k8s-master-1:~$ kubectl get nodes
-NAME           STATUS   ROLES                  AGE   VERSION
-k8s-master-1   Ready    control-plane,master   59s   v1.23.4
+NAME           STATUS   ROLES           AGE   VERSION
+k8s-master-1   Ready    control-plane   63s   v1.26.2
 ```
 
 ## Add the worker nodes
