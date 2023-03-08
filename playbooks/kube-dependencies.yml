@@ -92,13 +92,11 @@
     - name: add Containerd configuration
       shell: /usr/bin/containerd config default > /etc/containerd/config.toml
 
-    - name: configuring the systemd cgroup driver
-      replace:
+    - name: configuring the systemd cgroup driver for Containerd
+      lineinfile:
         path: /etc/containerd/config.toml
-        after: '[plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc.options]'
-        before: '[plugins."io.containerd.grpc.v1.cri".containerd.untrusted_workload_runtime]'
-        regexp: 'SystemdCgroup = false'
-        replace: 'SystemdCgroup = true'
+        regexp: '            SystemdCgroup = false'
+        line: '            SystemdCgroup = true'
 
     - name: enable the Containerd service and start it
       systemd:
@@ -109,13 +107,13 @@
 
     - name: install Kubelet
       apt:
-        name: kubelet=1.19.*
+        name: kubelet=1.26.*
         state: present
         update_cache: true
 
     - name: install Kubeadm
       apt:
-        name: kubeadm=1.19.*
+        name: kubeadm=1.26.*
         state: present
 
     - name: enable the Kubelet service, and enable it persistently
@@ -145,7 +143,7 @@
     - name: add runtime args in Kubelet config
       lineinfile:
         dest: "/etc/systemd/system/kubelet.service.d/10-kubeadm.conf"
-        line: "Environment=\"KUBELET_EXTRA_ARGS= --runtime-cgroups=/system.slice/containerd.service --container-runtime=remote --runtime-request-timeout=15m --container-runtime-endpoint=unix:///run/containerd/containerd.sock\""
+        line: "Environment=\"KUBELET_EXTRA_ARGS= --runtime-cgroups=/system.slice/containerd.service --container-runtime-endpoint=unix:///run/containerd/containerd.sock\""
         insertafter: '\[Service\]'
       when: check_args.stdout == ""
 
@@ -157,6 +155,6 @@
   tasks:
     - name: install Kubectl
       apt:
-        name: kubectl=1.19.*
+        name: kubectl=1.26.*
         state: present
         force: yes # allow downgrades
