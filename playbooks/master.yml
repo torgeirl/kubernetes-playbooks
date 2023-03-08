@@ -1,8 +1,29 @@
 - hosts: master
   become: yes
   tasks:
+    - name: create an empty file for Kubeadm configuring
+      copy:
+        content: ""
+        dest: /etc/kubernetes/kubeadm-config.yaml
+        force: no
+
+    - name: configuring the container runtime including its cgroup driver
+      blockinfile:
+        path: /etc/kubernetes/kubeadm-config.yaml
+        block: |
+             kind: ClusterConfiguration
+             apiVersion: kubeadm.k8s.io/v1beta3
+             networking:
+               podSubnet: "10.244.0.0/16"
+             ---
+             kind: KubeletConfiguration
+             apiVersion: kubelet.config.k8s.io/v1beta1
+             kind: KubeletConfiguration
+             runtimeRequestTimeout: "15m"
+             cgroupDriver: "systemd"
+
     - name: initialize the cluster (this could take some time)
-      shell: kubeadm init --pod-network-cidr=10.244.0.0/16 >> cluster_initialized.log
+      shell: kubeadm init --config /etc/kubernetes/kubeadm-config.yaml >> cluster_initialized.log
       args:
         chdir: /home/ubuntu
         creates: cluster_initialized.log
