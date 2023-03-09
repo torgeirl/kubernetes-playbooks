@@ -18,7 +18,6 @@
              ---
              kind: KubeletConfiguration
              apiVersion: kubelet.config.k8s.io/v1beta1
-             kind: KubeletConfiguration
              runtimeRequestTimeout: "15m"
              cgroupDriver: "systemd"
              systemReserved:
