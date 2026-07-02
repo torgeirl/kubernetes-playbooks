@@ -2,8 +2,17 @@
   become: yes
   tasks:
     - fail:
-       msg: "OS should be Ubuntu 22.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
-      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '22.04'
+       msg: "OS should be Ubuntu 26.04, not {{ ansible_distribution }} {{ ansible_distribution_version }}"
+      when: ansible_distribution != 'Ubuntu' or ansible_distribution_version != '26.04'
+
+    - name: verify cgroups v2 is enabled (required for Ubuntu 26.04 and Kubernetes 1.36)
+      shell: |
+        if [ ! -f /sys/fs/cgroup/cgroup.controllers ]; then
+          echo "cgroup v2 not detected - Ubuntu 26.04 only supports cgroup v2"
+          exit 1
+        fi
+      register: cgroup_check
+      changed_when: false
 
     - name: update APT packages
       apt:
@@ -53,17 +62,23 @@
     - name: apply sysctl params without reboot
       command: sysctl --system
 
-    - name: install APT Transport HTTPS
+    - name: install APT Transport HTTPS and cURL
       apt:
-        name: apt-transport-https
+        name:
+          - apt-transport-https
+          - curl
         state: present
 
+    - name: create apt keyrings directory
+      file:
+        path: /etc/apt/keyrings
+        state: directory
+        mode: '0755'
+
     - name: add Docker apt-key
-      get_url:
-        url: https://download.docker.com/linux/ubuntu/gpg
-        dest: /etc/apt/keyrings/docker-apt-keyring.asc
-        mode: '0644'
-        force: true
+      shell: curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker-apt-keyring.asc
+      args:
+        creates: /etc/apt/keyrings/docker-apt-keyring.asc
 
     - name: add Docker's APT repository
       apt_repository:
@@ -72,15 +87,13 @@
         update_cache: yes
 
     - name: add Kubernetes apt-key
-      get_url:
-        url: https://pkgs.k8s.io/core:/stable:/v1.29/deb/Release.key
-        dest: /etc/apt/keyrings/kubernetes-apt-keyring.asc
-        mode: '0644'
-        force: true
+      shell: curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.36/deb/Release.key -o /etc/apt/keyrings/kubernetes-apt-keyring.asc
+      args:
+        creates: /etc/apt/keyrings/kubernetes-apt-keyring.asc
 
     - name: add Kubernetes' APT repository
       apt_repository:
-        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.29/deb/ /"
+        repo: "deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.asc] https://pkgs.k8s.io/core:/stable:/v1.36/deb/ /"
         state: present
         update_cache: yes
 
@@ -103,6 +116,11 @@
         regexp: '            SystemdCgroup = false'
         line: '            SystemdCgroup = true'
 
+    - name: verify containerd cgroup v2 configuration
+      shell: grep -q "SystemdCgroup = true" /etc/containerd/config.toml
+      register: containerd_cgroup_check
+      changed_when: false
+
     - name: enable the Containerd service and start it
       systemd:
         name: containerd
@@ -112,13 +130,13 @@
 
     - name: install Kubelet
       apt:
-        name: kubelet=1.29.*
+        name: kubelet=1.36.*
         state: present
         update_cache: true
 
     - name: install Kubeadm
       apt:
-        name: kubeadm=1.29.*
+        name: kubeadm=1.36.*
         state: present
 
     - name: enable the Kubelet service, and enable it persistently
@@ -149,6 +167,6 @@
   tasks:
     - name: install Kubectl
       apt:
-        name: kubectl=1.29.*
+        name: kubectl=1.36.*
         state: present
         force: yes # allow downgrades

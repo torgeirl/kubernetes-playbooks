@@ -12,7 +12,7 @@
         path: /etc/kubernetes/kubeadm-config.yaml
         block: |
              kind: ClusterConfiguration
-             apiVersion: kubeadm.k8s.io/v1beta3
+             apiVersion: kubeadm.k8s.io/v1beta4
              networking:
                podSubnet: "10.244.0.0/16"
              ---
@@ -20,6 +20,7 @@
              apiVersion: kubelet.config.k8s.io/v1beta1
              runtimeRequestTimeout: "15m"
              cgroupDriver: "systemd"
+             failCgroupV1: true
              systemReserved:
                cpu: 100m
                memory: 350M
@@ -53,7 +54,7 @@
     - name: install Pod network
       become: yes
       become_user: ubuntu
-      shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml >> pod_network_setup.log
+      shell: kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/v0.28.5/Documentation/kube-flannel.yml >> pod_network_setup.log
       args:
         chdir: $HOME
         creates: pod_network_setup.log
